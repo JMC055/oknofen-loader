@@ -1,0 +1,113 @@
+index.html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKNOFEN</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0f1115;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  text-align: center;
+}
+
+.logo {
+  width: 130px;
+  margin-bottom: 30px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.85; }
+}
+
+.progress-container {
+  width: 220px;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #00cfff;
+  transition: width 0.3s ease;
+}
+
+.percent {
+  margin-top: 15px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<img src="logo.png" class="logo" alt="OKNOFEN">
+
+<h2>Démarrage du service</h2>
+
+<div class="progress-container">
+  <div class="progress-bar" id="bar"></div>
+</div>
+
+<div class="percent" id="percent">0%</div>
+<div class="status">Connexion au serveur sécurisé...</div>
+
+<script>
+const backendURL = "https://oknofen.onrender.com/login";
+
+let progress = 0;
+const bar = document.getElementById("bar");
+const percentText = document.getElementById("percent");
+
+function fakeProgress() {
+  if (progress < 90) {
+    progress += Math.random() * 5;
+    if (progress > 90) progress = 90;
+    bar.style.width = progress + "%";
+    percentText.textContent = Math.floor(progress) + "%";
+  }
+}
+
+async function checkServer() {
+  try {
+    await fetch(backendURL, { mode: "no-cors" });
+    progress = 100;
+    bar.style.width = "100%";
+    percentText.textContent = "100%";
+    setTimeout(() => {
+      window.location.href = backendURL;
+    }, 500);
+  } catch {
+    setTimeout(checkServer, 2000);
+  }
+}
+
+setInterval(fakeProgress, 300);
+checkServer();
+</script>
+
+</body>
+</html>
